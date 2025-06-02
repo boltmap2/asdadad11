@@ -1,37 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, Globe } from 'lucide-react';
 import NavBar from '../components/NavBar';
+import WorldMap from '../components/WorldMap';
+import MapSidebar from '../components/MapSidebar';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [selectedCountry, setSelectedCountry] = useState<any | null>(null);
   
+  const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+    // Implement search functionality
+  };
+
+  const handleMetricChange = (metric: string) => {
+    console.log('Metric changed to:', metric);
+    // Implement metric change functionality
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
       
-      <main className="flex-grow flex flex-col items-center justify-center px-4 py-16 bg-gradient-to-b from-white to-slate-100">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex justify-center mb-6">
-            <Globe className="h-16 w-16 text-blue-700" />
+      <main className="flex-grow flex">
+        <div className="flex-grow flex">
+          <div className="w-3/4 h-[calc(100vh-4rem)] p-4">
+            <WorldMap onCountrySelect={setSelectedCountry} />
           </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            World Trade Explorer
-          </h1>
-          
-          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
-            Analyze global trade patterns, compare countries, and explore industry-specific 
-            trade data with our interactive dashboard.
-          </p>
-          
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center px-6 py-3 bg-blue-700 text-white font-medium rounded-lg shadow-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300"
-          >
-            <BarChart3 className="mr-2 h-5 w-5" />
-            Go to Dashboard
-          </button>
+          <div className="w-1/4 h-[calc(100vh-4rem)] p-4 bg-slate-50">
+            <MapSidebar
+              selectedCountry={selectedCountry}
+              onSearch={handleSearch}
+              onMetricChange={handleMetricChange}
+            />
+          </div>
         </div>
       </main>
       
