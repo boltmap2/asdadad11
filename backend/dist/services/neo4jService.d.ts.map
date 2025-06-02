@@ -1,0 +1,1 @@
+{"version":3,"file":"neo4jService.d.ts","sourceRoot":"","sources":["../../src/services/neo4jService.ts"],"names":[],"mappings":"AAGA,qBAAa,YAAY;IACvB,OAAO,CAAC,MAAM,CAAe;;IAYvB,qBAAqB,CAAC,OAAO,EAAE,MAAM,EAAE,QAAQ,EAAE,MAAM;CAmB9D"}

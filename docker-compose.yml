@@ -1,0 +1,36 @@
+services:
+  neo4j:
+    image: neo4j:5.15-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/password
+      NEO4J_dbms_memory_pagecache_size: 1G
+      NEO4J_dbms_security_procedures_unrestricted: "gds.*"
+    volumes:
+      - neo4j_data:/data
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: password
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+
+volumes:
+  neo4j_data:
+  clickhouse_data:
