@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Filter } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
 
 interface MapSidebarProps {
   selectedCountry: any | null;
@@ -12,6 +12,14 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
   onSearch,
   onMetricChange
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    onSearch(query);
+  };
+
   if (!selectedCountry) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -21,9 +29,10 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
           <div className="relative">
             <input
               type="text"
+              value={searchQuery}
+              onChange={handleSearchInput}
               placeholder="Search for a country..."
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onChange={(e) => onSearch(e.target.value)}
             />
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
           </div>
@@ -46,15 +55,15 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
           <h3 className="text-lg font-medium mb-3">Trade Agreements</h3>
           <div className="space-y-2">
             <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox" />
+              <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
               <span className="ml-2">Free Trade Agreements</span>
             </label>
             <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox" />
+              <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
               <span className="ml-2">Customs Unions</span>
             </label>
             <label className="flex items-center">
-              <input type="checkbox" className="form-checkbox" />
+              <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
               <span className="ml-2">Preferential Trade</span>
             </label>
           </div>

@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BarChart3, Globe } from 'lucide-react';
 import NavBar from '../components/NavBar';
 import WorldMap from '../components/WorldMap';
 import MapSidebar from '../components/MapSidebar';
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
   const [selectedCountry, setSelectedCountry] = useState<any | null>(null);
   
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
-    // Implement search functionality
+    // In the future, this will filter/highlight countries on the map
+    // For now, we just log the search query
   };
 
   const handleMetricChange = (metric: string) => {
     console.log('Metric changed to:', metric);
-    // Implement metric change functionality
+    // In the future, this will update the map coloring
+    // For now, we just log the metric change
   };
 
   return (
@@ -28,7 +27,7 @@ const HomePage: React.FC = () => {
           <div className="w-3/4 h-[calc(100vh-4rem)] p-4">
             <WorldMap onCountrySelect={setSelectedCountry} />
           </div>
-          <div className="w-1/4 h-[calc(100vh-4rem)] p-4 bg-slate-50">
+          <div className="w-1/4 h-[calc(100vh-4rem)] p-4 bg-slate-50 overflow-y-auto">
             <MapSidebar
               selectedCountry={selectedCountry}
               onSearch={handleSearch}

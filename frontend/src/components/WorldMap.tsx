@@ -16,7 +16,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect }) => {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=YOUR_KEY',
+      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
       center: [0, 20],
       zoom: 1.5
     });
@@ -24,43 +24,44 @@ const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect }) => {
     map.current.addControl(new maplibregl.NavigationControl());
 
     map.current.on('load', () => {
+      if (!map.current) return;
+
       // Add country boundaries layer
-      map.current?.addSource('countries', {
-        type: 'vector',
-        url: 'https://api.maptiler.com/tiles/countries-v3/tiles.json?key=YOUR_KEY'
+      map.current.addSource('countries', {
+        type: 'geojson',
+        data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_admin_0_countries.geojson'
       });
 
-      map.current?.addLayer({
+      map.current.addLayer({
         id: 'country-fills',
         type: 'fill',
         source: 'countries',
-        'source-layer': 'countries',
+        layout: {},
         paint: {
           'fill-color': '#334155',
           'fill-opacity': 0.5
         }
       });
 
-      map.current?.addLayer({
+      map.current.addLayer({
         id: 'country-borders',
         type: 'line',
         source: 'countries',
-        'source-layer': 'countries',
+        layout: {},
         paint: {
           'line-color': '#64748b',
           'line-width': 1
         }
       });
 
-      // Add hover effect
-      map.current?.addLayer({
+      map.current.addLayer({
         id: 'country-fills-hover',
         type: 'fill',
         source: 'countries',
-        'source-layer': 'countries',
+        layout: {},
         paint: {
           'fill-color': '#2563eb',
-          'fill-opacity': 0
+          'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.7, 0]
         }
       });
     });
@@ -69,45 +70,44 @@ const WorldMap: React.FC<WorldMapProps> = ({ onCountrySelect }) => {
     map.current.on('click', 'country-fills', (e) => {
       if (!e.features?.[0]) return;
       
-      const countryName = e.features[0].properties?.name_en;
+      const countryName = e.features[0].properties?.ADMIN || e.features[0].properties?.name;
       setSelectedCountry(countryName);
       
-      // Mock data for demonstration
       const mockCountryData = {
         name: countryName,
-        gdp: Math.floor(Math.random() * 1000) + 'B USD',
-        exports: Math.floor(Math.random() * 500) + 'B USD',
-        imports: Math.floor(Math.random() * 500) + 'B USD',
-        topPartners: ['USA', 'China', 'Germany', 'Japan'],
-        tradeAgreements: ['NAFTA', 'ASEAN', 'EU']
+        gdp: `${Math.floor(Math.random() * 1000)}B USD`,
+        exports: `${Math.floor(Math.random() * 500)}B USD`,
+        imports: `${Math.floor(Math.random() * 500)}B USD`,
+        topPartners: ['United States', 'China', 'Germany', 'Japan', 'United Kingdom'],
+        tradeAgreements: ['NAFTA', 'EU', 'ASEAN', 'MERCOSUR']
       };
       
       onCountrySelect(mockCountryData);
     });
 
     // Handle hover effects
-    let hoveredStateId: string | null = null;
+    let hoveredStateId: number | null = null;
 
     map.current.on('mousemove', 'country-fills', (e) => {
       if (e.features?.length) {
-        if (hoveredStateId !== null) {
+        if (hoveredStateId) {
           map.current?.setFeatureState(
-            { source: 'countries', sourceLayer: 'countries', id: hoveredStateId },
+            { source: 'countries', id: hoveredStateId },
             { hover: false }
           );
         }
-        hoveredStateId = e.features[0].id as string;
+        hoveredStateId = e.features[0].id as number;
         map.current?.setFeatureState(
-          { source: 'countries', sourceLayer: 'countries', id: hoveredStateId },
+          { source: 'countries', id: hoveredStateId },
           { hover: true }
         );
       }
     });
 
     map.current.on('mouseleave', 'country-fills', () => {
-      if (hoveredStateId !== null) {
+      if (hoveredStateId) {
         map.current?.setFeatureState(
-          { source: 'countries', sourceLayer: 'countries', id: hoveredStateId },
+          { source: 'countries', id: hoveredStateId },
           { hover: false }
         );
       }
